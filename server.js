@@ -7,7 +7,6 @@ const fs = require('fs');
 const fsp = require('fs/promises');
 const path = require('path');
 const zlib = require('zlib');
-const crypto = require('crypto');
 const { spawn } = require('child_process');
 
 const ROOT = __dirname;
@@ -19,9 +18,6 @@ const SETTINGS = '.studio.json';
 const HIDDEN = new Set([BUILD, SETTINGS]);
 const PORT = Number(process.env.PORT) || 5173;
 const HOST = process.env.HOST || '127.0.0.1';
-// Optional HTTP Basic Auth — set AUTH_PASSWORD whenever the app is reachable from other machines.
-const AUTH_USER = process.env.AUTH_USER || 'admin';
-const AUTH_PASSWORD = process.env.AUTH_PASSWORD || '';
 const MAX_UPLOAD = 200 * 1024 * 1024;
 const COMPILE_TIMEOUT = 10 * 60 * 1000;
 
@@ -65,15 +61,6 @@ function readBody(req, limit = MAX_UPLOAD) {
 async function readJson(req) {
   const buf = await readBody(req, 5 * 1024 * 1024);
   try { return buf.length ? JSON.parse(buf.toString('utf8')) : {}; } catch { throw new HttpError(400, 'Invalid JSON'); }
-}
-
-function authorized(req) {
-  if (!AUTH_PASSWORD) return true;
-  const m = /^Basic\s+(.+)$/i.exec(req.headers.authorization || '');
-  if (!m) return false;
-  const given = crypto.createHash('sha256').update(Buffer.from(m[1], 'base64')).digest();
-  const expected = crypto.createHash('sha256').update(`${AUTH_USER}:${AUTH_PASSWORD}`).digest();
-  return crypto.timingSafeEqual(given, expected);
 }
 
 function exists(p) { return fsp.access(p).then(() => true, () => false); }
@@ -628,7 +615,6 @@ const server = http.createServer(async (req, res) => {
   const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
   try {
     if (url.pathname === '/healthz') return send(res, 200, 'ok', 'text/plain');
-    if (!authorized(req)) return send(res, 401, 'Authentication required', 'text/plain', { 'WWW-Authenticate': 'Basic realm="LaTeX Studio", charset="UTF-8"' });
     if (url.pathname.startsWith('/api/')) await handleApi(req, res, url);
     else await serveStatic(req, res, url);
   } catch (err) {
@@ -654,7 +640,5 @@ const server = http.createServer(async (req, res) => {
   });
   server.listen(PORT, HOST, () => {
     console.log(`\n  LaTeX Studio running at http://localhost:${PORT}\n`);
-    console.log(engines.length ? `  Engines: ${engines.map((e) => e.id).join(', ')}` : '  No LaTeX engine found — run `node scripts/setup.js` first.');
-    if (!AUTH_PASSWORD && !['127.0.0.1', 'localhost', '::1'].includes(HOST)) console.warn('  WARNING: listening publicly with no AUTH_PASSWORD — anyone can read and edit your projects.');
-  });
+    console.log(engines.length ? `  Engines: ${engines.map((e) => e.id).join(', ')}` : '  No LaTeX engine found — run `node scripts/setup.js` first.');  });
 })();

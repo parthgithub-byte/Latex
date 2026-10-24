@@ -92,6 +92,7 @@ body.resizing iframe, body.resizing .pdf-scroll { pointer-events: none; }
 .node .main-tag { margin-left: auto; font-size: 10px; font-weight: 700; color: var(--accent); border: 1px solid var(--accent); border-radius: 4px; padding: 0 4px; }
 .node .dirty { width: 7px; height: 7px; border-radius: 50%; background: var(--warn); margin-left: auto; flex: none; }
 .sidebar-hint { flex: none; padding: 8px 10px; color: var(--muted); font-size: 11px; border-top: 1px solid var(--line); }
+.sidebar-credit { flex: none; padding: 6px 10px; color: var(--muted); font-size: 11px; text-align: center; border-top: 1px solid var(--line); }
 
 /* ---------- Editor ---------- */
 .tabs { display: flex; height: 34px; flex: none; background: var(--panel-2); border-bottom: 1px solid var(--line); overflow-x: auto; scrollbar-width: thin; }

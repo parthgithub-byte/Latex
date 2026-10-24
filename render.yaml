@@ -5,11 +5,6 @@ services:
     runtime: docker
     plan: free
     healthCheckPath: /healthz
-    envVars:
-      - key: AUTH_USER
-        value: admin
-      - key: AUTH_PASSWORD
-        sync: false # Render asks you for this value when the Blueprint is created
     # Without a disk, projects are lost on every redeploy/restart. Disks need a paid
     # plan: change `plan` to starter and uncomment these lines to keep projects.
     # disk:

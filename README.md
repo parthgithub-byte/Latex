@@ -153,7 +153,6 @@ The **Engine** dropdown now also lists pdfLaTeX, XeLaTeX and LuaLaTeX from your 
 |---|---|---|
 | Port | set the `PORT` environment variable | `5173` |
 | Listen address | set the `HOST` environment variable | `127.0.0.1` (this computer only) |
-| Password | set `AUTH_PASSWORD` (and optionally `AUTH_USER`) to require a browser login | off; user `admin` |
 | Projects folder | set the `PROJECTS_DIR` environment variable | `projects/` next to `server.js` |
 
 Examples:
@@ -169,7 +168,7 @@ $env:PORT=8080; npm start
 set PORT=8080 && npm start
 ```
 
-Leave `HOST` alone unless you understand the risk. Without `AUTH_PASSWORD` the app has no login, so anyone who can reach the port can read and edit your projects.
+Leave `HOST` alone unless you understand the risk. The app has no login, so anyone who can reach the port can read and edit your projects.
 
 ---
 
@@ -178,7 +177,7 @@ Leave `HOST` alone unless you understand the risk. Without `AUTH_PASSWORD` the a
 The repo includes a `Dockerfile` and a `render.yaml` Blueprint. The image downloads the Linux Tectonic build and pre-caches the common LaTeX packages, so the first compile is fast.
 
 1. Push this repo to GitHub.
-2. In the [Render dashboard](https://dashboard.render.com): **New + → Blueprint**, pick the repo, and enter a value for **`AUTH_PASSWORD`** when asked. Log in with user `admin` and that password.
+2. In the [Render dashboard](https://dashboard.render.com): **New + → Blueprint**, pick the repo and click **Deploy Blueprint**.
 3. Wait for the build (several minutes the first time), then open the `onrender.com` URL.
 
 Things to know:
