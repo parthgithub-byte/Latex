@@ -1,0 +1,60 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{graphicx}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\graphicspath{{images/}}
+
+\title{Sample Document}
+\author{Your Name}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Write your abstract here. Press \textbf{Recompile} (or Ctrl+Enter) to rebuild the PDF.
+\end{abstract}
+
+\section{Introduction}
+LaTeX handles \textbf{bold}, \textit{italic}, \underline{underlined},
+\textcolor{teal}{coloured} and \texttt{monospaced} text, plus maths such as
+\begin{equation}
+  e^{i\pi} + 1 = 0 \label{eq:euler}
+\end{equation}
+which we can reference as Equation~\eqref{eq:euler}.
+
+\section{Media}
+Upload images with the upload button, drag them onto the editor, or paste
+a screenshot with Ctrl+V. Figure~\ref{fig:sample} is an example.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.45\linewidth]{sample.png}
+  \caption{An image from the \texttt{images} folder.}
+  \label{fig:sample}
+\end{figure}
+
+\begin{table}[h]
+  \centering
+  \begin{tabular}{lrr}
+    \toprule
+    Item & Value & Change \\
+    \midrule
+    Alpha & 12.4 & +3\% \\
+    Beta  &  8.1 & $-$1\% \\
+    \bottomrule
+  \end{tabular}
+  \caption{A booktabs table.}
+\end{table}
+
+\section{References}
+Cite sources from \texttt{references.bib}, e.g.~\cite{knuth1984}.
+
+\bibliographystyle{plain}
+\bibliography{references}
+
+\end{document}

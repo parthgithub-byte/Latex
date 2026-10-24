@@ -2,5 +2,7 @@
 node_modules
 bin
 public/vendor
-projects
+projects/*
+!projects/Sample Project
+projects/*/.build
 *.log

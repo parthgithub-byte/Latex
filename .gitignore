@@ -2,5 +2,7 @@ bin/
 public/vendor/
 node_modules/
 
-# Your own documents stay local. A generic sample project is created on first run.
-projects/
+# Only the generic sample project is committed; your own projects stay local.
+projects/*
+!projects/Sample Project/
+projects/*/.build/

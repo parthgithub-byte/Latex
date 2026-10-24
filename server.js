@@ -395,7 +395,7 @@ const TEMPLATE = String.raw`\documentclass[11pt,a4paper]{article}
 \usepackage{hyperref}
 \graphicspath{{images/}}
 
-\title{My Final Year Project}
+\title{Sample Document}
 \author{Your Name}
 \date{\today}
 
@@ -641,7 +641,7 @@ const server = http.createServer(async (req, res) => {
 
 (async () => {
   await fsp.mkdir(PROJECTS_DIR, { recursive: true });
-  if (!(await fsp.readdir(PROJECTS_DIR)).some((n) => !n.startsWith('.'))) await createProject('My Project');
+  if (!(await fsp.readdir(PROJECTS_DIR)).some((n) => !n.startsWith('.'))) await createProject('Sample Project');
   const engines = detectEngines();
   server.on('error', (err) => {
     if (err.code === 'EADDRINUSE') {

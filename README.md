@@ -66,7 +66,7 @@ To stop the server from a terminal, press **Ctrl+C**.
 
 ### 5. First compile (one time, slow)
 
-On first launch a sample project called **My Project** is created. Press **Recompile**.
+Open the **Sample Project** (a generic starter with a `main.tex`, `references.bib` and an image) and press **Recompile**.
 
 The **first ever compile takes a few minutes** (about 8 minutes on a typical connection), because Tectonic downloads the LaTeX formats, fonts and packages it needs (~40 MB). This happens only once. They're cached on your computer, and later compiles take a few seconds.
 
@@ -194,7 +194,7 @@ Things to know:
 ```
 Latex/
 ├── projects/            ← your work: one folder per project
-│   └── My Project/
+│   └── Sample Project/
 │       ├── main.tex
 │       ├── references.bib
 │       ├── images/
@@ -206,7 +206,7 @@ Latex/
 └── server.js
 ```
 
-Projects are ordinary folders. To **back up** a project, copy its folder; to **delete** one, delete its folder (while the app is stopped). The included `.gitignore` excludes `bin/`, `public/vendor/` and the whole `projects/` folder, so your own documents are never committed; a fresh clone creates a generic sample project on first run.
+Projects are ordinary folders. To **back up** a project, copy its folder; to **delete** one, delete its folder (while the app is stopped). The included `.gitignore` excludes `bin/`, `public/vendor/`, build output and every project except `Sample Project`, so your own documents are never committed.
 
 ---
 
