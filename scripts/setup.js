@@ -79,6 +79,8 @@ async function installVendor() {
 (async () => {
   try {
     await installVendor();
+    // --vendor-only: static frontend hosts (e.g. Vercel) need the browser libraries but not the LaTeX engine.
+    if (process.argv.includes('--vendor-only')) return;
     await installTectonic();
     console.log('\nDone. Start the app with:  npm start   (or double-click start.bat)');
   } catch (err) {
