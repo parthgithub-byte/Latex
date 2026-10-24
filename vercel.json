@@ -5,7 +5,7 @@
   "buildCommand": "node scripts/setup.js --vendor-only",
   "outputDirectory": "public",
   "rewrites": [
-    { "source": "/api/:path*", "destination": "https://YOUR-RENDER-SERVICE.onrender.com/api/:path*" }
+    { "source": "/api/:path*", "destination": "https://latex-studio-tdw2.onrender.com/api/:path*" }
   ],
   "headers": [
     {
