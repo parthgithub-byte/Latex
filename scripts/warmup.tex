@@ -1,0 +1,24 @@
+% Compiled once while building the Docker image so the LaTeX formats, fonts and
+% common packages are already cached when the deployed app compiles its first document.
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{graphicx}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs,tabularx,longtable,multirow,array}
+\usepackage{float,caption}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{setspace}
+\usepackage{listings}
+\usepackage{hyperref}
+\begin{document}
+\section{Warm-up}
+Text, maths $e^{i\pi}+1=0$ and a citation~\cite{knuth1984}.
+\begin{tabularx}{\linewidth}{|l|X|}
+\hline
+A & B \\ \hline
+\end{tabularx}
+\bibliographystyle{plain}
+\bibliography{warmup}
+\end{document}

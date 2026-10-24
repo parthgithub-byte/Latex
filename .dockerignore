@@ -1,0 +1,6 @@
+.git
+node_modules
+bin
+public/vendor
+projects
+*.log

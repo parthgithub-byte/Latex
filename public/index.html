@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LaTeX Studio</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23138a52'/%3E%3Ctext x='16' y='22' font-family='Georgia,serif' font-size='15' font-weight='700' fill='white' text-anchor='middle'%3ETeX%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="vendor/codemirror/codemirror.css">
+  <link rel="stylesheet" href="vendor/codemirror/dialog.css">
+  <link rel="stylesheet" href="vendor/codemirror/show-hint.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><span class="brand-mark">TeX</span><span class="brand-name">LaTeX Studio</span></div>
+    <div class="tb-group">
+      <select id="projectSelect" class="tb-select" title="Project"></select>
+      <button class="tb-btn ghost" id="newProjectBtn" title="New project">+ New</button>
+    </div>
+    <div class="tb-spacer"></div>
+    <div class="tb-group">
+      <label class="tb-label">Main</label>
+      <select id="mainSelect" class="tb-select" title="Main document (the file that gets compiled)"></select>
+      <label class="tb-label">Engine</label>
+      <select id="engineSelect" class="tb-select" title="LaTeX engine"></select>
+    </div>
+    <div class="tb-group">
+      <div class="split-btn">
+        <button class="tb-btn primary" id="compileBtn" title="Recompile (Ctrl+Enter / Ctrl+S)">
+          <span class="spinner" aria-hidden="true"></span><span class="label">Recompile</span>
+        </button>
+        <button class="tb-btn primary caret" id="autoCompileBtn" title="Auto-compile after you stop typing" aria-pressed="false">Auto: Off</button>
+      </div>
+      <button class="tb-btn" id="logsBtn" title="Errors, warnings and raw log">Logs <span class="badge" id="logsBadge" hidden></span></button>
+      <a class="tb-btn" id="downloadBtn" title="Download PDF" aria-disabled="true">⤓ PDF</a>
+    </div>
+  </header>
+
+  <main class="workspace" id="workspace">
+    <!-- File tree -->
+    <aside class="pane sidebar" id="sidebar">
+      <div class="pane-toolbar">
+        <span class="pane-title">Files</span>
+        <div class="icon-row">
+          <button class="icon-btn" data-act="new-file" title="New file"></button>
+          <button class="icon-btn" data-act="new-folder" title="New folder"></button>
+          <button class="icon-btn" data-act="upload" title="Upload files"></button>
+          <button class="icon-btn" data-act="upload-folder" title="Upload a folder"></button>
+          <button class="icon-btn" data-act="import-url" title="Import from URL"></button>
+        </div>
+      </div>
+      <div class="tree" id="tree" tabindex="0"></div>
+      <div class="sidebar-hint">Drop files or folders here · paste images into the editor</div>
+      <input type="file" id="fileInput" multiple hidden>
+      <input type="file" id="folderInput" webkitdirectory multiple hidden>
+    </aside>
+    <div class="resizer" data-resize="sidebar"></div>
+
+    <!-- Editor -->
+    <section class="pane editor-pane" id="editorPane">
+      <div class="tabs" id="tabs"></div>
+      <div class="fmt-toolbar" id="fmtToolbar">
+        <button data-fmt="bold" title="Bold (Ctrl+B)"><b>B</b></button>
+        <button data-fmt="italic" title="Italic (Ctrl+I)"><i>I</i></button>
+        <button data-fmt="underline" title="Underline"><u>U</u></button>
+        <button data-fmt="mono" title="Monospace"><code>tt</code></button>
+        <span class="sep"></span>
+        <select data-fmt="heading" title="Section heading">
+          <option value="">Heading…</option>
+          <option value="chapter">Chapter</option>
+          <option value="section">Section</option>
+          <option value="subsection">Subsection</option>
+          <option value="subsubsection">Subsubsection</option>
+          <option value="paragraph">Paragraph</option>
+        </select>
+        <span class="sep"></span>
+        <button data-fmt="itemize" title="Bulleted list">• List</button>
+        <button data-fmt="enumerate" title="Numbered list">1. List</button>
+        <button data-fmt="math" title="Inline maths">$x$</button>
+        <button data-fmt="equation" title="Display equation">∑ Eq</button>
+        <span class="sep"></span>
+        <button data-fmt="figure" title="Insert figure (pick an image)">🖼 Figure</button>
+        <button data-fmt="table" title="Insert table">▦ Table</button>
+        <button data-fmt="link" title="Hyperlink">🔗 Link</button>
+        <button data-fmt="cite" title="Citation">❝ Cite</button>
+        <button data-fmt="ref" title="Cross-reference">↪ Ref</button>
+        <span class="sep"></span>
+        <button data-fmt="comment" title="Toggle comment (Ctrl+/)">%</button>
+        <button data-fmt="search" title="Find / replace (Ctrl+F / Shift+Ctrl+F)">Find</button>
+        <div class="tb-spacer"></div>
+        <button data-fmt="sync-to-pdf" title="Show this line in the PDF (Ctrl+Alt+→). Double-click the PDF to jump back.">→ PDF</button>
+      </div>
+      <div class="editor-host" id="editorHost"></div>
+      <div class="media-view" id="mediaView" hidden></div>
+      <div class="empty-editor" id="emptyEditor" hidden>Open a file from the tree on the left.</div>
+      <div class="statusbar">
+        <span id="statusFile"></span>
+        <span class="tb-spacer"></span>
+        <span id="statusSave"></span>
+        <span id="statusPos"></span>
+      </div>
+    </section>
+    <div class="resizer" data-resize="pdf"></div>
+
+    <!-- PDF viewer -->
+    <section class="pane pdf-pane" id="pdfPane">
+      <div class="pdf-toolbar">
+        <button class="icon-btn light" id="prevPage" title="Previous page">‹</button>
+        <span class="page-ind"><input id="pageInput" value="0" inputmode="numeric" aria-label="Page"> / <span id="pageCount">0</span></span>
+        <button class="icon-btn light" id="nextPage" title="Next page">›</button>
+        <span class="sep"></span>
+        <button class="icon-btn light" id="zoomOut" title="Zoom out">−</button>
+        <select id="zoomSelect" title="Zoom">
+          <option value="fit-width">Fit width</option>
+          <option value="fit-page">Fit page</option>
+          <option value="0.5">50%</option>
+          <option value="0.75">75%</option>
+          <option value="1">100%</option>
+          <option value="1.25">125%</option>
+          <option value="1.5">150%</option>
+          <option value="2">200%</option>
+          <option value="3">300%</option>
+        </select>
+        <button class="icon-btn light" id="zoomIn" title="Zoom in">+</button>
+        <div class="tb-spacer"></div>
+        <span class="pdf-meta" id="pdfMeta"></span>
+        <a class="icon-btn light" id="openPdfTab" title="Open PDF in a new tab" target="_blank" rel="noopener" aria-disabled="true">⧉</a>
+      </div>
+      <div class="pdf-scroll" id="pdfScroll">
+        <div class="pdf-pages" id="pdfPages"></div>
+        <div class="pdf-empty" id="pdfEmpty">
+          <div class="pdf-empty-card">
+            <div class="big">No PDF yet</div>
+            <div>Press <b>Recompile</b> or <kbd>Ctrl</kbd>+<kbd>Enter</kbd>.</div>
+          </div>
+        </div>
+      </div>
+      <div class="compile-overlay" id="compileOverlay" hidden>
+        <div class="compile-card"><span class="spinner big"></span><div id="compileMsg">Compiling…</div></div>
+      </div>
+
+      <!-- Logs drawer -->
+      <div class="logs" id="logs" hidden>
+        <div class="logs-head">
+          <button class="logs-tab active" data-tab="problems">Problems</button>
+          <button class="logs-tab" data-tab="raw">Raw log</button>
+          <div class="tb-spacer"></div>
+          <button class="icon-btn light" id="closeLogs" title="Close">✕</button>
+        </div>
+        <div class="logs-body" id="logsProblems"></div>
+        <pre class="logs-body raw" id="logsRaw" hidden></pre>
+      </div>
+    </section>
+  </main>
+
+  <div class="drop-overlay" id="dropOverlay" hidden><div>Drop to upload</div></div>
+  <div class="ctx-menu" id="ctxMenu" hidden></div>
+  <div class="modal-back" id="modal" hidden><form class="modal" id="modalForm"></form></div>
+  <div class="toasts" id="toasts"></div>
+
+  <script src="vendor/codemirror/codemirror.js"></script>
+  <script src="vendor/codemirror/stex.js"></script>
+  <script src="vendor/codemirror/matchbrackets.js"></script>
+  <script src="vendor/codemirror/closebrackets.js"></script>
+  <script src="vendor/codemirror/active-line.js"></script>
+  <script src="vendor/codemirror/searchcursor.js"></script>
+  <script src="vendor/codemirror/dialog.js"></script>
+  <script src="vendor/codemirror/search.js"></script>
+  <script src="vendor/codemirror/jump-to-line.js"></script>
+  <script src="vendor/codemirror/show-hint.js"></script>
+  <script src="vendor/codemirror/comment.js"></script>
+  <script src="vendor/pdfjs/pdf.js"></script>
+  <script src="latex-hints.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

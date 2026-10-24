@@ -1,0 +1,13 @@
+{
+  "name": "latex-studio",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Local Overleaf-style LaTeX editor with live PDF preview",
+  "scripts": {
+    "setup": "node scripts/setup.js",
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
